@@ -1,0 +1,55 @@
+﻿<!doctype html>
+<html ng-app="demoApp">
+<head>
+    <meta charset='utf-8'>
+    <title>ATI 2015 - Demo consumir API Rest desde HTML + AngularJS </title>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.min.js"></script>
+</head>
+<body ng-controller="DemoCtrl">
+    <article>
+        <header>
+            <h1>ATI 2015 - Demo consumir API Rest desde HTML + AngularJS </h1>
+            <p>
+                Todas las demos consumen la API "Ultimate Weather Forecasts":
+                <a href='https://www.mashape.com/george-vustrey/ultimate-weather-forecasts' target='blank'>
+                    https://www.mashape.com/george-vustrey/ultimate-weather-forecasts
+                </a>
+            </p>
+        </header>
+
+        <ul>
+            <li ng-repeat="x in datos">{{x.day_of_week}} - {{x.condition}} - min:{{x.low_celsius}}°C * max:{{x.high_celsius}}°C</li>
+        </ul>
+        <button ng-click="consumirAPI();">Consumir API</button>
+        
+    </article>
+
+
+    <script>
+    var helloApp = angular.module("demoApp", []);
+    helloApp.controller("DemoCtrl", function ($scope,$timeout,$http) {
+        $scope.datos = [];
+
+        $scope.consumirAPI = function ()
+        {
+            var url = "https://george-vustrey-weather.p.mashape.com/api.php?location=La+Plata";
+			var req = { url: url,
+                headers: { "Content-Type": "application/json", "X-Mashape-Key": "4gEggQQKGcmshXGE5So6cB3pT5oHp1LvV5ajsnF5GqpspCGVZI" },
+                method: 'GET' }
+			$http(req).then(
+			function (result) {					
+						$scope.datos = result.data;                    
+                },function () {
+					alert('Se produjo un error');                    
+                })
+            
+        }
+
+     
+    });
+    </script>
+        
+</body>
+
+</html>

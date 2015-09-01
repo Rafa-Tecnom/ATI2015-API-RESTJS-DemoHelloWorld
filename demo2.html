@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>ATI 2015 - Demo consumir API Rest desde HTML + jQuery </title>
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+
+<body>
+<article>
+  <header>
+  <h1>ATI 2015 - Demo consumir API Rest desde HTML + jQuery </h1>
+  <p>Todas las demos consumen la API "Ultimate Weather Forecasts": 
+      <a href='https://www.mashape.com/george-vustrey/ultimate-weather-forecasts' target='blank'>
+      https://www.mashape.com/george-vustrey/ultimate-weather-forecasts</a>
+  </p>
+  </header>
+  
+    <div id="textareaInput">-</div>
+    <button onclick="javascript:consumirAPI();">Consumir API</button>
+    <span id="consumirAPIMsg" style="color:red; display:none;">Consumiendo información ...</span>
+</article>
+    <script>
+        function consumirAPI() {
+            var s = '';
+
+            var url = "https://george-vustrey-weather.p.mashape.com/api.php?location=La+Plata";
+
+            $('#consumirAPIMsg').text('Consumiendo información de ' + url);
+            $('#consumirAPIMsg').show();
+
+            var template = '<li>{{day_of_week}} - {{condition}} - min:{{low_celsius}} max:{{high_celsius}}</li>'
+
+            $.ajax({
+                url: url,
+                headers: { "Content-Type": "application/json", "X-Mashape-Key": "4gEggQQKGcmshXGE5So6cB3pT5oHp1LvV5ajsnF5GqpspCGVZI" },
+                type: 'GET',
+                contentType: "application/json",
+                success: function (data) {
+                    $('#consumirAPIMsg').hide();
+                    var str = '';
+                    var tplrender;
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        tplrender = template;
+                        tplrender = tplrender.replace('{{day_of_week}}', data[i].day_of_week);
+                        tplrender = tplrender.replace('{{condition}}', data[i].condition);
+                        tplrender = tplrender.replace('{{high_celsius}}', data[i].high_celsius);
+                        tplrender = tplrender.replace('{{low_celsius}}', data[i].low_celsius);
+                        str = str + tplrender;
+                    }
+                    str = '<ul>'+str+'</ul>'
+                    $('#textareaInput').html(str);
+                },
+                error: function (data, errorThrown) {
+                    $('#consumirAPIMsg').text('Consumiendo información de ' + url);
+                }
+            });
+
+           
+        }
+    </script>
+</body>
+</html>
